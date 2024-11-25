@@ -1,13 +1,14 @@
-const { sql } = require('../config/db');
+class Meal {
+  constructor(id, meal, meal_type, description, sugarLevel, date, image_url, day_type) {
+    this.id = id;
+    this.meal = meal;
+    this.meal_type = meal_type;
+    this.description = description;
+    this.sugarLevel = sugarLevel;
+    this.date = date;
+    this.image_url = image_url;
+    this.day_type = day_type;
+  }
+}
 
-const getMeals = async () => {
-    const result = await sql.query`SELECT * FROM meals`;
-    return result.recordset;
-};
-
-const addMeal = async (meal, meal_type, description, sugarLevel, date, image_url) => {
-    await sql.query`INSERT INTO meals (meal, meal_type, description, sugarLevel, date, image_url) 
-                    VALUES (${meal}, ${meal_type}, ${description}, ${sugarLevel}, ${date}, ${image_url})`;
-};
-
-module.exports = { getMeals, addMeal };
+module.exports = Meal;

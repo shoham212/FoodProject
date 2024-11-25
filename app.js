@@ -1,17 +1,22 @@
-const express = require('express');
-const { sql, connectToDatabase } = require('./config/dbConfig');
-const userRoutes = require('./routes/userRoutes');
-const mealRoutes = require('./routes/mealRoutes');
-const imageRoutes = require('./routes/imageRoutes');
+process.stdout.setEncoding('utf8');
 
+const express = require('express');
 const app = express();
+const mealRoutes = require('./routes/mealRoutes');
+const botService = require('./services/botService'); // להפעיל את הבוט
+
+
+// Middlewares
 app.use(express.json());
 
-connectToDatabase();
-
-app.use('/api/users', userRoutes);
+// Routes
 app.use('/api/meals', mealRoutes);
-app.use('/api/images', imageRoutes);
 
-const PORT = 4000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+// הפעלת הבוט של Telegram
+botService.startBot(); // פונקציה מתוך botService שמתחילה להפעיל את הבוט
+
+// Server
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
