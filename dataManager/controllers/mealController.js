@@ -23,19 +23,27 @@ const addMeal = async (req, res) => {
 
     console.log(`URL התמונה שהתקבל: ${imageUrl}`);
 
-    const sugar_level = await getSugarLevel(meal);
-    console.log(`רמת סוכר: ${sugar_level}`);
-
     // קבלת סוג היום
     const day_type = await getDayType(date, meal_type);
     console.log(`סוג היום: ${day_type}`);
 
     // ניתוח התמונה באמצעות Imagga
     const tags = await analyzeImage(imageUrl);
-    console.log('תגיות מהתמונה:', tags);
+    //console.log('תגיות מהתמונה:', tags);
+
+    const mainTag = tags[0]?.tag; // התגית הראשונה
+    console.log(`תגית ראשונה מ-Imagga: ${mainTag}`);
+
+    if (!mainTag) {
+        return res.status(400).json({ message: 'לא זוהתה תגית מהתמונה.' });
+    }
+
+    // פנייה ל-USDA לקבלת רמת הסוכר באמצעות התגית הראשית
+     const sugar_level = await getSugarLevel(mainTag);
+    //console.log(`רמת סוכר לפי USDA: ${sugar_level}`);
 
     const isFood = isImageFood(tags);
-    console.log(`האם התמונה מייצגת מאכל: ${isFood}`);
+    //console.log(`האם התמונה מייצגת מאכל: ${isFood}`);
 
     if (!isFood) {
       return res.status(400).json({ message: 'התמונה אינה מייצגת מאכל.' });
