@@ -1,11 +1,12 @@
 const {addMealToDatabase , getAllMealsFromDatabase, getMealByIdFromDatabase, deleteMealFromDatabase,getMealHistoryFromDatabase  } = require('../dal/mealDal');
-const { getDayType } = require('../services/dayTypeService'); 
+const { getDayType } =  require('../services/dayTypeService');
 const { getImageFromTelegram } = require('../services/botService');
 const { analyzeImage, isImageFood } = require('../services/imageAnalysisService');
+const { getSugarLevel } = require('../services/USDAservice'); // פונקציה לשירות הסוכר
 
 const addMeal = async (req, res) => {
   try {
-    const { meal, meal_type, description, sugarLevel, date, image_url } = req.body;
+    const { meal,description ,meal_type ,date, sugar_level_after_two_hours, image_url } = req.body;
 
     // בדיקה אם תמונה סופקה
     let imageUrl = image_url;
@@ -21,6 +22,9 @@ const addMeal = async (req, res) => {
     }
 
     console.log(`URL התמונה שהתקבל: ${imageUrl}`);
+
+    const sugar_level = await getSugarLevel(meal);
+    console.log(`רמת סוכר: ${sugar_level}`);
 
     // קבלת סוג היום
     const day_type = await getDayType(date, meal_type);
@@ -38,13 +42,14 @@ const addMeal = async (req, res) => {
     }
 
     // הוספת הארוחה למסד הנתונים
-    await addMealToDatabase(meal, meal_type, description, sugarLevel, date, imageUrl, day_type);
+    await addMealToDatabase(meal,description, meal_type,date ,day_type,imageUrl, sugar_level, sugar_level_after_two_hours);
     res.status(201).json({ message: 'הארוחה נוספה בהצלחה.' });
   } catch (error) {
     console.error('שגיאה בהוספת הארוחה:', error); // שגיאה מלאה
     res.status(500).json({ message: 'שגיאה בהוספת הארוחה.', error: error.message });
   }
 };
+
 
 
 // פונקציה לשליפת כל הארוחות
@@ -101,4 +106,4 @@ const getMealHistory = async (req, res) => {
   }
 };
 
-module.exports = {addMeal , getAllMeals, getMealById, deleteMeal,getMealHistory };
+module.exports = {addMeal , getAllMeals, getMealById, deleteMeal,getMealHistory, getSugarLevel };

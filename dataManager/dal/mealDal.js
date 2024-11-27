@@ -1,20 +1,21 @@
 const { sql, connectToDatabase } = require('../config/dbConfig');
 
 // פונקציה להוספת ארוחה למסד הנתונים
-const addMealToDatabase = async (meal, mealType, description, sugarLevel, date, imageUrl, dayType) => {
+const addMealToDatabase = async (meal,description, meal_type ,date, dayType,	imageUrl,sugar_level, sugar_level_after_two_hours) => {
   try {
     const pool = await connectToDatabase();
     await pool.request()
       .input('meal', sql.NVarChar, meal)
-      .input('meal_type', sql.NVarChar, mealType)
       .input('description', sql.NVarChar, description)
-      .input('sugarLevel', sql.Int, sugarLevel)
+      .input('meal_type', sql.NVarChar, meal_type)
       .input('date', sql.Date, date)
-      .input('image_url', sql.NVarChar, imageUrl)
       .input('day_type', sql.NVarChar, dayType)
+      .input('image_url', sql.NVarChar, imageUrl)
+      .input('sugar_level', sql.Float, 	sugar_level) // שינוי שם העמודה ל-sugar_level
+      .input('sugar_level_after_two_hours', sql.Float, sugar_level_after_two_hours) // עמודה חדשה
       .query(`
-        INSERT INTO Meals (meal, meal_type, description, sugarLevel, date, image_url, day_type)
-        VALUES (@meal, @meal_type, @description, @sugarLevel, @date, @image_url, @day_type)
+        INSERT INTO Meals (meal,description, 	meal_type, date, day_type,	image_url, 	sugar_level, sugar_level_after_two_hours)
+        VALUES (@meal, @description, @meal_type, @date, @day_type, @image_url, @sugar_level, @sugar_level_after_two_hours)
       `);
     console.log('הארוחה נוספה למסד הנתונים');
   } catch (error) {
@@ -22,6 +23,7 @@ const addMealToDatabase = async (meal, mealType, description, sugarLevel, date, 
     throw error;
   }
 };
+
 
 // פונקציה לשליפת כל הארוחות
 const getAllMealsFromDatabase = async () => {
