@@ -1,11 +1,13 @@
 const axios = require('axios');
+const calendarificConfig = require('../config/calendarificConfig'); // ייבוא ההגדרות
 
 const getDayType = async (date, meal_type) => {
   try {
     const formattedDate = new Date(date).toISOString().split('T')[0]; // YYYY-MM-DD
     const year = new Date(date).getFullYear(); // הפקת השנה מתוך התאריך
-    const apiKey = process.env.CALENDARIFIC_API_KEY; // שימוש במפתח מהסביבה
-    const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=IL&year=${year}&type=religious`;
+
+    // יצירת כתובת URL עם ההגדרות
+    const url = `${calendarificConfig.baseUrl}/holidays?api_key=${calendarificConfig.apiKey}&country=${calendarificConfig.country}&year=${year}&type=${calendarificConfig.holidayType}`;
 
     const response = await axios.get(url);
 

@@ -1,16 +1,14 @@
 const axios = require('axios');
+const imaggaConfig = require('../config/imaggaConfig'); // ייבוא ההגדרות של Imagga
 
 // פונקציה לניתוח תמונה באמצעות Imagga API
 async function analyzeImage(imageUrl) {
-    const apiKey = process.env.IMAGGA_API_KEY;
-    const apiSecret = process.env.IMAGGA_API_SECRET;
-
     try {
         // שליחת בקשה ל-API
-        const response = await axios.get('https://api.imagga.com/v2/tags', {
+        const response = await axios.get(`${imaggaConfig.baseUrl}/tags`, {
             params: { image_url: imageUrl },
             headers: {
-                Authorization: `Basic ${Buffer.from(`${apiKey}:${apiSecret}`).toString('base64')}`
+                Authorization: `Basic ${Buffer.from(`${imaggaConfig.apiKey}:${imaggaConfig.apiSecret}`).toString('base64')}`
             }
         });
 

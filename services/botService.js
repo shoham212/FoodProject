@@ -1,5 +1,7 @@
 const { Telegraf } = require('telegraf');
-const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
+const telegramConfig = require('../config/telegramConfig'); // ייבוא ההגדרות של Telegram
+
+const bot = new Telegraf(telegramConfig.botToken);
 
 let imageUrlFromTelegram = null;
 
