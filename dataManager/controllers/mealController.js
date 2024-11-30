@@ -1,69 +1,39 @@
-const {addMealToDatabase , getAllMealsFromDatabase, getMealByIdFromDatabase, deleteMealFromDatabase,getMealHistoryFromDatabase  } = require('../dal/mealDal');
-const { getDayType } =  require('../services/dayTypeService');
-const { getImageFromTelegram } = require('../services/botService');
-const { analyzeImage, isImageFood } = require('../services/imageAnalysisService');
-const { getSugarLevel } = require('../services/USDAservice'); // פונקציה לשירות הסוכר
+const { 
+  addMealToDatabase, 
+  getAllMealsFromDatabase, 
+  getMealByIdFromDatabase, 
+  deleteMealFromDatabase, 
+  getMealHistoryFromDatabase 
+} = require('../dal/mealDal');
+const { getDayType } = require('../services/dayTypeService');
+const { processImage } = require('../controllers/imageController'); // פונקציה לשירות הטיפול בתמונה
 
+// הוספת ארוחה
 const addMeal = async (req, res) => {
   try {
-    const { meal,description ,meal_type ,date, sugar_level_after_two_hours, image_url } = req.body;
+    const userId = req.user.id; // קבלת ה-userId מתוך האסימון
+    const { meal, description, meal_type, date, sugar_level_after_two_hours, image_url } = req.body;
 
-    // בדיקה אם תמונה סופקה
-    let imageUrl = image_url;
-
-    if (!imageUrl) {
-      console.log("אין תמונה ב-URL, ממתין לתמונה דרך Telegram...");
-      imageUrl = await getImageFromTelegram(); // פונקציה מ-botService.js
-    }
-
-    if (!imageUrl) {
-      console.log("לא התקבלה תמונה דרך Telegram.");
-      return res.status(400).json({ message: 'תמונה לא סופקה ולא התקבלה דרך Telegram.' });
-    }
-
-    console.log(`URL התמונה שהתקבל: ${imageUrl}`);
+    // טיפול בתמונה באמצעות imageController
+    const { imageUrl, sugarLevel } = await processImage(image_url);
 
     // קבלת סוג היום
     const day_type = await getDayType(date, meal_type);
-    console.log(`סוג היום: ${day_type}`);
-
-    // ניתוח התמונה באמצעות Imagga
-    const tags = await analyzeImage(imageUrl);
-    //console.log('תגיות מהתמונה:', tags);
-
-    const mainTag = tags[0]?.tag; // התגית הראשונה
-    console.log(`תגית ראשונה מ-Imagga: ${mainTag}`);
-
-    if (!mainTag) {
-        return res.status(400).json({ message: 'לא זוהתה תגית מהתמונה.' });
-    }
-
-    // פנייה ל-USDA לקבלת רמת הסוכר באמצעות התגית הראשית
-     const sugar_level = await getSugarLevel(mainTag);
-    //console.log(`רמת סוכר לפי USDA: ${sugar_level}`);
-
-    const isFood = isImageFood(tags);
-    //console.log(`האם התמונה מייצגת מאכל: ${isFood}`);
-
-    if (!isFood) {
-      return res.status(400).json({ message: 'התמונה אינה מייצגת מאכל.' });
-    }
 
     // הוספת הארוחה למסד הנתונים
-    await addMealToDatabase(meal,description, meal_type,date ,day_type,imageUrl, sugar_level, sugar_level_after_two_hours);
+    await addMealToDatabase(userId, meal, description, meal_type, date, day_type, imageUrl, sugarLevel, sugar_level_after_two_hours);
     res.status(201).json({ message: 'הארוחה נוספה בהצלחה.' });
   } catch (error) {
-    console.error('שגיאה בהוספת הארוחה:', error); // שגיאה מלאה
+    console.error('שגיאה בהוספת הארוחה:', error);
     res.status(500).json({ message: 'שגיאה בהוספת הארוחה.', error: error.message });
   }
 };
 
-
-
-// פונקציה לשליפת כל הארוחות
+// שליפת כל הארוחות של המשתמש
 const getAllMeals = async (req, res) => {
   try {
-    const meals = await getAllMealsFromDatabase();
+    const userId = req.user.id; // קבלת ה-userId מתוך האסימון
+    const meals = await getAllMealsFromDatabase(userId);
     res.status(200).json(meals);
   } catch (error) {
     console.error('שגיאה בשליפת הארוחות:', error);
@@ -71,11 +41,12 @@ const getAllMeals = async (req, res) => {
   }
 };
 
-// פונקציה לשליפת ארוחה לפי מזהה
+// שליפת ארוחה לפי מזהה
 const getMealById = async (req, res) => {
   try {
+    const userId = req.user.id; // קבלת ה-userId מתוך האסימון
     const { id } = req.params;
-    const meal = await getMealByIdFromDatabase(id);
+    const meal = await getMealByIdFromDatabase(userId, id);
 
     if (!meal) {
       return res.status(404).json({ error: 'ארוחה לא נמצאה' });
@@ -88,11 +59,12 @@ const getMealById = async (req, res) => {
   }
 };
 
-//פונקציה למחקת ארוחה לפי מזהה
+// מחיקת ארוחה לפי מזהה
 const deleteMeal = async (req, res) => {
   try {
+    const userId = req.user.id; // קבלת ה-userId מתוך האסימון
     const mealId = req.params.id; // קבלת ה-ID מהכתובת
-    await deleteMealFromDatabase(mealId); // קריאה לפונקציה שמוחקת מה-DAL
+    await deleteMealFromDatabase(userId, mealId); // קריאה לפונקציה שמוחקת מה-DAL
     res.status(200).json({ message: 'הארוחה נמחקה בהצלחה' });
   } catch (error) {
     console.error('שגיאה במחיקת הארוחה:', error);
@@ -100,12 +72,14 @@ const deleteMeal = async (req, res) => {
   }
 };
 
+// קבלת היסטוריית ארוחות
 const getMealHistory = async (req, res) => {
   try {
+    const userId = req.user.id; // קבלת ה-userId מתוך האסימון
     const { startDate, endDate, mealType } = req.query;
 
     // קריאה לפונקציה שמבצעת שאילתה
-    const meals = await getMealHistoryFromDatabase(startDate, endDate, mealType);
+    const meals = await getMealHistoryFromDatabase(userId, startDate, endDate, mealType);
 
     res.status(200).json(meals);
   } catch (error) {
@@ -114,4 +88,10 @@ const getMealHistory = async (req, res) => {
   }
 };
 
-module.exports = {addMeal , getAllMeals, getMealById, deleteMeal,getMealHistory, getSugarLevel };
+module.exports = {
+  addMeal,
+  getAllMeals,
+  getMealById,
+  deleteMeal,
+  getMealHistory
+};

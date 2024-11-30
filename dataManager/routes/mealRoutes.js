@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { addMeal, getAllMeals, getMealById, deleteMeal,getMealHistory  } = require('../controllers/mealController');
+const { addMeal, getAllMeals, getMealById, deleteMeal, getMealHistory } = require('../controllers/mealController');
+const { authenticateToken } = require('../middlewares/authMiddleware'); // ייבוא ה-Middleware
 
-// מסלול להוספת ארוחה
-router.post('/add', addMeal);
+// מסלול להוספת ארוחה (מוגן באמצעות authenticateToken)
+router.post('/add', authenticateToken, addMeal);
 
-// מסלול לשליפת כל הארוחות
-router.get('/meals', getAllMeals);
+// מסלול לשליפת כל הארוחות (מוגן באמצעות authenticateToken)
+router.get('/meals', authenticateToken, getAllMeals);
 
-// מסלול לשליפת ארוחה לפי מזהה
-router.get('/meals/:id', getMealById);
+// מסלול לשליפת ארוחה לפי מזהה (מוגן באמצעות authenticateToken)
+router.get('/meals/:id', authenticateToken, getMealById);
 
-// מסלול למחיקת ארוחה לפי מזהה
-router.delete('/:id', deleteMeal);
+// מסלול למחיקת ארוחה לפי מזהה (מוגן באמצעות authenticateToken)
+router.delete('/:id', authenticateToken, deleteMeal);
 
-// ב- mealRoutes.js
-router.get('/history', getMealHistory);
+// מסלול לשליפת היסטוריית ארוחות (מוגן באמצעות authenticateToken)
+router.get('/history', authenticateToken, getMealHistory);
 
-  
 module.exports = router;

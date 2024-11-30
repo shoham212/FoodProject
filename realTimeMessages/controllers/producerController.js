@@ -1,22 +1,26 @@
-const kafka = require('../config/kafkaConfig');
+const { sendMessage } = require('../services/producerService');
 
-const sendMessage = async (req, res) => {
-  try {
-    const { topic, message } = req.body;
+const sendUserMessage = async (req, res) => {
+    try {
+        const { userId, message } = req.body; // קבלת userId והודעה מהבקשה
 
-    const producer = kafka.producer();
-    await producer.connect();
-    await producer.send({
-      topic,
-      messages: [{ value: message }],
-    });
+        if (!userId || !message) {
+            return res.status(400).send({ error: 'userId and message are required' });
+        }
 
-    await producer.disconnect();
-    res.status(200).json({ status: 'success', message: 'Message sent' });
-  } catch (error) {
-    console.error('Error sending message:', error);
-    res.status(500).json({ status: 'error', error: error.message });
-  }
+        // בדיקת הרשאות: אימות שהשולח הוא רופא
+        if (req.user.role !== 'doctor') {
+            return res.status(403).send({ error: 'Unauthorized: Only doctors can send messages' });
+        }
+
+        // שליחת ההודעה
+        await sendMessage(userId, message);
+
+        res.status(200).send({ message: 'Message sent successfully' });
+    } catch (error) {
+        console.error('Error sending message:', error);
+        res.status(500).send({ error: 'Failed to send message', details: error.message });
+    }
 };
 
-module.exports = { sendMessage };
+module.exports = { sendUserMessage };

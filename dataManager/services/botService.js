@@ -3,20 +3,22 @@ const telegramConfig = require('../config/telegramConfig'); // ייבוא ההג
 
 const bot = new Telegraf(telegramConfig.botToken);
 
-let imageUrlFromTelegram = null;
+// משתנה לשמירת התמונות לפי מזהה משתמש
+const userImages = {};
 
 // מאזין לתמונה שנשלחת
 bot.on('photo', async (ctx) => {
   console.log('תמונה התקבלה מהמשתמש...');
   try {
+    const userId = ctx.from.id; // מזהה המשתמש ב-Telegram
     const photo = ctx.message.photo.pop(); // לוקח את האיכות הגבוהה ביותר
     console.log('Photo object:', photo);
 
     const fileId = photo.file_id;
     const fileLink = await ctx.telegram.getFileLink(fileId);
 
-    imageUrlFromTelegram = fileLink.href; // שומר את ה-URL
-    console.log('URL של התמונה שהתקבלה:', imageUrlFromTelegram); // הדפס את ה-URL
+    userImages[userId] = fileLink.href; // שומר את ה-URL לפי מזהה משתמש
+    console.log(`URL של התמונה שהתקבלה למשתמש ${userId}:`, fileLink.href);
 
     await ctx.reply('התמונה התקבלה בהצלחה!');
   } catch (error) {
@@ -24,15 +26,16 @@ bot.on('photo', async (ctx) => {
   }
 });
 
-// הפונקציה שתאפשר לקונטרולר לקבל את ה-URL
-const getImageFromTelegram = async () => {
-  console.log("ממתין לתמונה...");
+// פונקציה לקבלת התמונה לפי מזהה משתמש
+const getImageFromTelegram = async (userId) => {
+  console.log(`ממתין לתמונה עבור המשתמש ${userId}...`);
   return new Promise((resolve) => {
     const checkInterval = setInterval(() => {
-      if (imageUrlFromTelegram) {
+      if (userImages[userId]) {
+        const imageUrl = userImages[userId];
         clearInterval(checkInterval);
-        resolve(imageUrlFromTelegram);
-        imageUrlFromTelegram = null; // איפוס לאחר שימוש
+        delete userImages[userId]; // מחיקת התמונה לאחר שימוש
+        resolve(imageUrl);
       }
     }, 1000); // בדיקה כל שנייה
   });

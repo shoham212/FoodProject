@@ -3,18 +3,20 @@ process.stdout.setEncoding('utf8');
 const express = require('express');
 const app = express();
 const mealRoutes = require('./routes/mealRoutes');
+const usdaRoutes = require('./routes/usdaRoutes');
 const botService = require('./services/botService'); // להפעיל את הבוט
 const { runConsumer } = require('./services/consumerService'); // ייבוא הצרכן
-const usdaRoutes = require('./routes/usdaRoutes');
-
-// חיבור המסלול של USDA
-app.use('/api/usda', usdaRoutes);
+const { authenticateToken } = require('./middlewares/authMiddleware'); // ייבוא Middleware
 
 // Middlewares
 app.use(express.json());
 
-// Routes
-app.use('/api/meals', mealRoutes);
+// Static Middleware (אפשר להחזיר אם יש צורך בקבצים סטטיים)
+// app.use(express.static('public'));
+
+// מסלולים מאומתים
+app.use('/api/meals', authenticateToken, mealRoutes);
+app.use('/api/usda', authenticateToken, usdaRoutes);
 
 // הפעלת הבוט של Telegram
 try {

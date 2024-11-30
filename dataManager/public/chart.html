@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sugar Level Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Sugar Level After Two Hours</h1>
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate">
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate">
+    <button onclick="renderChart()">Show Chart</button>
+    
+    <canvas id="myChart" width="400" height="400"></canvas>
+    
+    <script>
+        async function fetchChartData(startDate, endDate) {
+            const response = await fetch(`/api/meals/chart?startDate=${startDate}&endDate=${endDate}`);
+            const data = await response.json();
+
+            const labels = data.map(item => new Date(item.date).toLocaleDateString());
+            const sugarLevels = data.map(item => item.sugar_level_after_two_hours);
+
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Sugar Level After Two Hours',
+                        data: sugarLevels,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        async function renderChart() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (startDate && endDate) {
+                await fetchChartData(startDate, endDate);
+            } else {
+                alert('Please select both start and end dates.');
+            }
+        }
+    </script>
+</body>
+</html>

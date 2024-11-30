@@ -1,17 +1,17 @@
-const kafka = require('../config/kafkaConfig');
+const kafka = require('../../realTimeMessages/config/kafkaConfig');
 
-const sendMessage = async (message) => {
+const sendMessage = async (userId, message) => {
     const producer = kafka.producer();
-    await producer.connect().catch((err) => console.error('Error connecting to Kafka:', err));
+    await producer.connect();
 
     await producer.send({
-        topic: 'medical-updates', // Topic שדרכו נשלחות ההודעות
+        topic: 'medical-updates',
         messages: [
-            { value: JSON.stringify(message) }, // ההודעה נשלחת בפורמט JSON
+            { value: JSON.stringify({ userId, message }) }, // כולל userId עם ההודעה
         ],
     });
 
-    console.log(`Message sent: ${JSON.stringify(message)}`);
+    console.log(`Message sent for user ${userId}: ${message}`);
     await producer.disconnect();
 };
 

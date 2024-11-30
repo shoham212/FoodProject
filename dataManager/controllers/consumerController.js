@@ -2,7 +2,10 @@ const { runConsumer } = require('../services/consumerService');
 
 const startConsumer = async (req, res) => {
     try {
-        await runConsumer();
+        const userId = req.user.id; // קבלת ה-userId מתוך האסימון (JWT)
+
+        // הפעלת הצרכן בהקשר של המשתמש
+        await runConsumer(userId);
         res.status(200).send({ message: 'Consumer started successfully' });
     } catch (error) {
         console.error('Error starting consumer:', error);
