@@ -1,34 +1,18 @@
 const kafka = require('../../realTimeMessages/config/kafkaConfig');
 
 const runConsumer = async () => {
-    const consumer = kafka.consumer({ groupId: 'project1Group' });
+    const consumer = kafka.consumer({ groupId: 'projectGroup' });
+    await consumer.connect();
 
-    try {
-        await consumer.connect();
-        console.log('Consumer connected to Kafka successfully.');
+    await consumer.subscribe({ topic: 'medical-updates', fromBeginning: true });
 
-        await consumer.subscribe({ topic: 'medical-updates', fromBeginning: true });
-        console.log('Subscribed to topic: medical-updates');
-
-        await consumer.run({
-            eachMessage: async ({ topic, partition, message }) => {
-                try {
-                    const { userId, message: userMessage } = JSON.parse(message.value.toString());
-                    console.log(`Message for user ${userId} received: ${userMessage}`);
-
-                    // לוגיקה נוספת כמו שמירת ההודעה ב-DB
-                    // await saveMessageToDB(userId, userMessage);
-
-                    // או שליחת הודעה דרך שירות צד שלישי
-                    // await sendNotification(userId, userMessage);
-                } catch (err) {
-                    console.error('Error processing message:', err.message);
-                }
-            },
-        });
-    } catch (err) {
-        console.error('Error starting consumer:', err.message);
-    }
+    await consumer.run({
+        eachMessage: async ({ topic, partition, message }) => {
+            const { userId, message: userMessage } = JSON.parse(message.value.toString());
+            console.log(`Message received from topic "${topic}" for user ${userId}: ${userMessage}`);
+            // כאן ניתן להוסיף לוגיקה נוספת, כמו שמירת ההודעה ב-DB
+        },
+    });
 };
 
 module.exports = { runConsumer };

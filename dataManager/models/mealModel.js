@@ -7,7 +7,6 @@ class Meal {
     sugar_level,
     sugar_level_after_two_hours,
     date,
-    image_url,
     day_type,
     user_id // שדה חדש לקישור משתמש לארוחה
   ) {
@@ -18,7 +17,6 @@ class Meal {
     this.sugar_level = sugar_level;
     this.sugar_level_after_two_hours = sugar_level_after_two_hours;
     this.date = date;
-    this.image_url = image_url;
     this.day_type = day_type;
     this.user_id = user_id; // מזהה המשתמש
   }

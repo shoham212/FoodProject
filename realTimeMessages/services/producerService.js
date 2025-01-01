@@ -1,18 +1,30 @@
 const kafka = require('../../realTimeMessages/config/kafkaConfig');
 
-const sendMessage = async (userId, message) => {
-    const producer = kafka.producer();
-    await producer.connect();
+const sendMessage = async (topic, userId, message) => {
+    try {
+        const producer = kafka.producer();
+        await producer.connect();
 
-    await producer.send({
-        topic: 'medical-updates',
-        messages: [
-            { value: JSON.stringify({ userId, message }) }, // כולל userId עם ההודעה
-        ],
-    });
+        const payload = {
+            userId,
+            message,
+        };
 
-    console.log(`Message sent for user ${userId}: ${message}`);
-    await producer.disconnect();
+        await producer.send({
+            topic: topic, // שימוש בנושא שנשלח בבקשה
+            messages: [
+                { value: JSON.stringify(payload) }
+            ]
+        });
+
+        console.log(`Message sent to topic "${topic}" for user ${userId}`);
+        await producer.disconnect();
+    } catch (error) {
+        console.error('Error sending message:', error);
+        throw error;
+    }
 };
 
 module.exports = { sendMessage };
+
+

@@ -18,12 +18,12 @@ const getDayType = async (date, meal_type) => {
     // זיהוי היום בשבוע
     const day = new Date(date).getDay(); // 0 - ראשון, 6 - שבת
 
-    if (day === 6 || (day === 5 && meal_type === 'ערב')) {
-      return 'שבת';
+    if (day === 6 || (day === 5 && meal_type === 'evening')) {
+      return 'Sabbath';
     } else if (isHoliday) {
-      return 'חג';
+      return 'holiday';
     } else {
-      return 'יום חול';
+      return 'weekday';
     }
   } catch (error) {
     console.error('שגיאה בקבלת סוג היום:', error.message);

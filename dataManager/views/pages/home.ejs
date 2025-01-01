@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+    <header id="header" class="alt">
+        <h1><a href="/">GlucoseMonitor</a></h1>
+    </header>  
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="/assets/css/main.css" />
+    <link rel="stylesheet" href="/assets/css/home.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</head>
+<body>
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h2>Your Journey to Better Health Starts Here</h1>
+            <p>Track your meals, analyze glucose levels, and improve your health.</p>
+        </header>
+
+        <section class="dashboard-options">
+            <div class="option">
+                <i class="fas fa-utensils"></i>
+                <h3>Add a Meal</h3>
+                <p>Upload your meals to keep track of your dietary habits.</p>
+                <a href="/add">Add Meal</a>
+            </div>
+            <div class="option">
+                <i class="fas fa-history"></i>
+                <h3>Meal History</h3>
+                <p>View and analyze your previous meals and trends.</p>
+                <a href="/history">View History</a>
+            </div>
+            <div class="option">
+                <i class="fas fa-chart-line"></i>
+                <h3>Analyze Glucose</h3>
+                <p>Check your glucose levels and predicted trends.</p>
+                <a href="/glucose-analysis">Analyze</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Toggle notifications dropdown
+        const notificationsIcon = document.getElementById('notificationsIcon');
+        const notificationsDropdown = document.getElementById('notificationsDropdown');
+        notificationsIcon.addEventListener('click', () => {
+            notificationsDropdown.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

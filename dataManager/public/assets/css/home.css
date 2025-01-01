@@ -1,0 +1,355 @@
+/* Header Styling */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background: white;
+    color: white;
+}
+
+.header .logo {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.header .notifications .badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    padding: 1.7px 4px;
+    font-size: 0.6em;
+    font-weight: bold;
+}
+
+/* Dashboard Section */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.dashboard-header h1 {
+    font-size: 2.8em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.dashboard-header p {
+  margin-top: 20px; /* ערכי לפי הצורך */
+  text-align: center;
+    font-size: 1.2em;
+    color: #888;
+    margin-bottom: 40px;
+}
+
+.dashboard-options {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.option {
+    flex: 1 1 calc(30% - 20px);
+    background: white;
+    border-radius: 15px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.option:hover {
+    transform: translateY(-10px);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.option i {
+    font-size: 3em;
+    color: #4CAF50;
+    margin-bottom: 15px;
+}
+
+.option h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.option p {
+    font-size: 1em;
+    color: #777 !important;
+}
+
+.option a {
+    display: inline-block;
+    font-size: 0.9em;
+    color: #666;
+    text-decoration: none;
+}
+
+.option a:hover {
+    text-decoration: underline;
+}
+
+  header {
+    text-align: center!important;  /* ממרכז את התוכן */
+    padding: 20px 0!important;  /* מוסיף רווח למעלה ולמטה */
+    overflow: visible!important;  /* מבטיח שהתוכן לא ייחתך */
+    margin-top: 0!important; 
+    padding-top: 0!important; 
+  }
+  
+  
+  h1 {
+    font-size: 4em; /* גודל הגופן של הלוגו */
+    margin: 0; /* מסיר רווחים */
+    line-height: 1.2; /* מרווח שורות */
+    margin-top: 0;
+    padding-top: 0;
+    
+  }
+
+  .wrapper.style5 {
+    background: #f9f9f9;
+    padding: 4em 3em;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px; /* להתפרס יותר אך לא בצורה מוגזמת */
+    margin: 0 auto; /* לשמור על מיקום בעמוד */
+  }
+  
+  .col-6 {
+    flex: 1;
+    margin: 0 20px; /* מרווח בין העמודות */
+  }
+  
+  #contact-form {
+    max-width: 600px; /* לשלוט על רוחב הטופס */
+  }
+  
+  ul.contact {
+    max-width: 600px; /* לשלוט על רוחב רשימת הפרטים */
+  }
+  
+  .fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .field {
+    flex: 1 1 calc(50% - 10px); /* חצי שורה לכל שדה */
+  }
+  
+  .field.full {
+    flex: 1 1 100%; /* לשדה ההודעה - כל השורה */
+  }
+  
+  textarea {
+    width: 100% !important; /* מאפשר לשדה לתפוס את כל רוחב הקונטיינר */
+    height: 150px !important; /* התאמת הגובה */
+    resize: none !important; /* מונע מהמשתמש לשנות את הגודל */
+    padding: 10px !important; /* מוסיף מרווח פנימי */
+    font-size: 1em !important; /* התאמת גודל הטקסט */
+    border: 1px solid #ccc !important; /* גבול מסביב לשדה */
+    border-radius: 5px !important; /* פינות מעוגלות */
+    box-sizing: border-box !important; /* מבטיח שהרוחב כולל את הגבול והפדינג */
+    resize: both !important; /* מאפשר שינוי גודל אופקי ואנכי */
+  }
+  
+  ul.contact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* שתי עמודות */
+    gap: 15px;
+  }
+  
+  ul.contact li {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+  }
+  
+  ul.contact li .icon {
+    margin-right: 10px;
+    font-size: 1.5em;
+    color: #fa7268;
+  }
+  
+  ul.contact li a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  ul.contact li a:hover {
+    color: #fa7268;
+  }
+  
+  button {
+    background-color: #fa7268;
+    border: none;
+    padding: 10px 20px;
+    color: #666;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #e65e58;
+  }
+  
+  header {
+    text-align: center; /* ממרכז את התוכן */
+    padding: 20px 0; /* מוסיף רווח למעלה ולמטה */
+    overflow: visible; /* מבטיח שהתוכן לא ייחתך */
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  
+  body {
+    margin-top: 40px !important; /* או ערך מתאים */
+  }
+  
+  .wrapper.style5 {
+    background: #f9f9f9 !important;
+    padding: 4em 3em !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    max-width: 1200px !important; /* להתפרס יותר אך לא בצורה מוגזמת */
+    margin: 0 auto !important; /* לשמור על מיקום בעמוד */
+  }
+  
+  header {
+    text-align: center !important; /* ממרכז את התוכן */
+    padding: 20px 0 !important; /* מוסיף רווח למעלה ולמטה */
+    overflow: visible !important; /* מבטיח שהתוכן לא ייחתך */
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  header nav {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+  }
+  
+  .white-text {
+    text-align: center !important;
+  }
+  
+  #mealType,
+  #mealDate,
+  #glucoseLevel {
+    width: 150% !important; /* קבע רוחב אחיד */
+    max-width: 300px !important; /* גבול מקסימלי */
+    background-color: #ffffff !important; /* רקע לבן */
+      border: 1px solid #ccc !important; /* מסגרת אפורה בהירה */
+      border-radius: 5px !important; /* פינות מעוגלות */
+      box-shadow: none !important; /* בלי צל */
+  }
+  
+  h2 {
+    text-align: center !important;
+    margin: 0 !important; /* מסיר רווחים */
+    line-height: 1.2 !important; /* מרווח שורות */
+  }
+  
+  nav {
+    position: absolute !important;
+    top: 10px !important;
+    right: 20px !important;
+  }
+
+  
+  .upload-box {
+    border: 2px dashed #ccc !important; /* קו מסגרת מקווקו */
+    border-radius: 8px !important; /* עיגול הפינות */
+    padding: 20px !important; /* ריווח פנימי */
+    text-align: center !important; /* מיקום התוכן במרכז */
+    color: #999 !important; /* צבע טקסט */
+    font-size: 16px !important; /* גודל טקסט */
+    transition: border-color 0.3s ease !important; /* אפקט מעבר */
+  }
+  
+  .upload-box:hover {
+    border-color: #666 !important; /* שינוי צבע המסגרת במעבר עכבר */
+  }
+  
+  .upload-box.dragover {
+    border-color: #007bff !important; /* צבע מסגרת כשגוררים קובץ */
+    background-color: #f8f9fa !important; /* רקע בהיר */
+  }
+  
+  #upload-text {
+    font-weight: bold !important; /* טקסט מודגש */
+  }
+  
+  .hidden-input {
+    display: none !important; /* הסתרת הקלט */
+  }
+  
+  .form-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 20px !important; /* רווח בין העמודות */
+  }
+  
+  .form-column {
+    flex: 1 !important;
+  }
+  
+  .upload-section {
+    text-align: center !important;
+  }
+  
+  .wrapper {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+  }
+  
+  button {
+    grid-column: span 2 !important;
+    justify-self: center !important;
+  }
+  
+  input, textarea, select {
+    font-family: 'Source Sans Pro' !important;
+    width: 150% !important; /* הרחבה למלוא הרוחב */
+    font-weight: 300 !important;
+    color: '#777' !important;
+    line-height: 1em !important;
+    font-size: 15pt !important;
+  }
+  
+  h3, h4, h5, h6 {
+		font-weight: 600;
+		text-transform: uppercase;
+		color: #888 !important;
+	}
+
+  h2 {
+		font-size: 1.65em;
+		font-weight: 400;
+		letter-spacing: 4px;
+		margin: 0 0 1.5em 0;
+		line-height: 1.75em;
+	}
+
+  * {
+    background-color: white !important; /* חובה */
+}
+  ;
+  

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+  <link rel="stylesheet" href="/assets/css/main.css"> <!-- עדכן את הנתיב לפי המיקום האמיתי של הקובץ -->
+  <link rel="stylesheet" href="/assets/css/contact.css"> <!-- עדכן את הנתיב לפי המיקום האמיתי של הקובץ -->
+
+
+  <!-- Main -->
+  <article id="main">
+    <header id="header" class="alt">
+      <h1><a href="/">GlucoseMonitor</a></h1>
+    </header>    
+    <header>
+      <h2>Questions or Comments? <strong>Get in Touch:</strong></h2>
+    </header>
+    <section class="wrapper style5">
+      <div class="inner">
+        <div class="row">
+          <!-- Form Section -->
+          <div class="col-6">
+            <form id="contact-form" class="fields">
+              <div class="field">
+                <input type="text" id="name" name="name" placeholder="Name" required>
+              </div>
+              <div class="field">
+                <input type="email" id="email" name="email" placeholder="Email" required>
+              </div>
+              <div class="field full">
+                <textarea id="message" name="message" placeholder="Message" rows="5" required></textarea>
+              </div>
+              <div class="field">
+                <button type="submit" class="button fit primary">
+                  <span class="icon solid fa-envelope"></span> Send Message
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Contact Details Section -->
+          <div class="col-6">
+            <p>Erat lorem ipsum veroeros consequat magna tempus lorem ipsum consequat.</p>
+            <ul class="contact">
+              <li><span class="icon solid fa-home"></span> 123 Somewhere Road<br>Nashville, TN 00000 USA</li>
+              <li><span class="icon solid fa-phone"></span>(000) 000-0000</li>
+              <li><span class="icon solid fa-envelope"></span><a href="mailto:info@untitled.tld">info@untitled.tld</a></li>
+              <li><span class="icon brands fa-twitter"></span><a href="#">@untitled</a></li>
+              <li><span class="icon brands fa-instagram"></span><a href="#">instagram.com/untitled</a></li>
+              <li><span class="icon brands fa-facebook"></span><a href="#">facebook.com/untitled</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("contact-form");
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        alert("Your message has been sent successfully!");
+        form.reset();
+      });
+    });
+  </script>
+</body>
+</html>

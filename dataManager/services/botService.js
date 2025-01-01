@@ -1,50 +1,107 @@
 const { Telegraf } = require('telegraf');
-const telegramConfig = require('../config/telegramConfig'); // ייבוא ההגדרות של Telegram
+const sql = require('mssql');
+const telegramConfig = require('../config/telegramConfig');
+const { connectToDatabase } = require('../config/dbConfig');
 
 const bot = new Telegraf(telegramConfig.botToken);
 
-// משתנה לשמירת התמונות לפי מזהה משתמש
-const userImages = {};
+// אובייקט זמני לשמירת התמונות עד לקבלת שם המשתמש
+const pendingImages = {};
 
 // מאזין לתמונה שנשלחת
 bot.on('photo', async (ctx) => {
-  console.log('תמונה התקבלה מהמשתמש...');
+  console.log('📸 תמונה התקבלה...');
   try {
-    const userId = ctx.from.id; // מזהה המשתמש ב-Telegram
-    const photo = ctx.message.photo.pop(); // לוקח את האיכות הגבוהה ביותר
-    console.log('Photo object:', photo);
-
+    const photo = ctx.message.photo.pop(); // תמונה באיכות גבוהה
     const fileId = photo.file_id;
     const fileLink = await ctx.telegram.getFileLink(fileId);
 
-    userImages[userId] = fileLink.href; // שומר את ה-URL לפי מזהה משתמש
-    console.log(`URL של התמונה שהתקבלה למשתמש ${userId}:`, fileLink.href);
+    // שמירת התמונה זמנית עד לקבלת שם המשתמש
+    const chatId = ctx.chat.id;
+    pendingImages[chatId] = { imageUrl: fileLink.href };
+    console.log(`✅ התמונה נשמרה זמנית עבור chatId: ${chatId}`);
+    console.log(`🔗 URL לתמונה: ${fileLink.href}`);
 
-    await ctx.reply('התמונה התקבלה בהצלחה!');
+    await ctx.reply('תמונה התקבלה בהצלחה! אנא שלח את שם המשתמש שלך.');
   } catch (error) {
-    console.error('שגיאה בטיפול בתמונה:', error.message);
+    console.error('❌ שגיאה בטיפול בתמונה:', error.message);
+    await ctx.reply('שגיאה בטיפול בתמונה. אנא נסה שוב.');
   }
 });
 
-// פונקציה לקבלת התמונה לפי מזהה משתמש
-const getImageFromTelegram = async (userId) => {
-  console.log(`ממתין לתמונה עבור המשתמש ${userId}...`);
-  return new Promise((resolve) => {
-    const checkInterval = setInterval(() => {
-      if (userImages[userId]) {
-        const imageUrl = userImages[userId];
-        clearInterval(checkInterval);
-        delete userImages[userId]; // מחיקת התמונה לאחר שימוש
-        resolve(imageUrl);
-      }
-    }, 1000); // בדיקה כל שנייה
-  });
+// מאזין לטקסט לאחר קבלת התמונה
+bot.on('text', async (ctx) => {
+  const chatId = ctx.chat.id;
+  const username = ctx.message.text;
+
+  console.log(`📩 שם המשתמש שהתקבל: ${username}`);
+
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('username', sql.VarChar(255), username)
+      .query(`SELECT id FROM users WHERE username = @username`);
+
+    if (result.recordset.length === 0) {
+      await ctx.reply('❌ שם המשתמש לא נמצא במערכת. אנא נסה שוב.');
+      return;
+    }
+
+    const dbUserId = result.recordset[0].id;
+
+    if (!pendingImages[chatId]) {
+      await ctx.reply('❌ לא התקבלה תמונה. אנא שלח תמונה תחילה.');
+      return;
+    }
+
+    const imageUrl = pendingImages[chatId].imageUrl;
+
+    // שמירה או עדכון של התמונה לטבלת temporary_sessions
+    await pool.request()
+      .input('db_user_id', sql.Int, dbUserId)
+      .input('image_url', sql.Text, imageUrl)
+      .query(`
+        IF EXISTS (SELECT 1 FROM temporary_sessions WHERE db_user_id = @db_user_id)
+            UPDATE temporary_sessions
+            SET image_url = @image_url
+            WHERE db_user_id = @db_user_id;
+        ELSE
+            INSERT INTO temporary_sessions (db_user_id, image_url)
+            VALUES (@db_user_id, @image_url);
+      `);
+
+    console.log(`✅ התמונה נשמרה או עודכנה ב-DB עבור משתמש ID: ${dbUserId}`);
+    await ctx.reply('✅ התמונה נשמרה בהצלחה.');
+
+    delete pendingImages[chatId];
+  } catch (error) {
+    console.error('❌ שגיאה בשמירת התמונה ב-DB:', error.message);
+    await ctx.reply('❌ שגיאה בשמירת הנתונים. אנא נסה שוב מאוחר יותר.');
+  }
+});
+
+// פונקציה לשליפת תמונה מה-DB לפי userId
+const getDataByDbUserId = async (dbUserId) => {
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('db_user_id', sql.Int, dbUserId)
+      .query(`SELECT image_url FROM temporary_sessions WHERE db_user_id = @db_user_id`);
+
+    if (result.recordset.length === 0) {
+      return null;
+    }
+    return { imageUrl: result.recordset[0].image_url };
+  } catch (error) {
+    console.error('❌ שגיאה בשליפת תמונה מה-DB:', error.message);
+    throw error;
+  }
 };
 
 // הפעלת הבוט
 const startBot = () => {
   bot.launch();
-  console.log('Telegram Bot is running!');
+  console.log('🚀 Telegram Bot is running!');
 };
 
-module.exports = { startBot, getImageFromTelegram };
+module.exports = { startBot, getDataByDbUserId };

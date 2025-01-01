@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // ייבוא מודול jwt
 const { createUser, getUserByUsername } = require('../dal/userDal');
+const { connectToDatabase } = require('../config/dbConfig');
+const sql = require('mssql'); // ייבוא מודול mssql
 
 // Register a new user
 const signup = async (req, res) => {
@@ -13,6 +15,7 @@ const signup = async (req, res) => {
     }
 
     await createUser(username, password);
+
     res.status(201).json({ message: 'המשתמש נוצר בהצלחה' });
   } catch (error) {
     console.error('שגיאה ביצירת המשתמש:', error);
@@ -54,4 +57,18 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login };
+// פונקציה לשליפת ID של משתמש לפי שם המשתמש
+const getUserIdByUsername = async (username) => {
+  try {
+    const pool = await connectToDatabase();
+    const result = await pool.request()
+      .input('username', sql.NVarChar, username)
+      .query('SELECT id FROM Users WHERE username = @username');
+    return result.recordset[0]?.id || null; // מחזיר את ה-ID או null אם המשתמש לא נמצא
+  } catch (error) {
+    console.error('שגיאה בשליפת ID לפי שם המשתמש:', error.message);
+    throw error;
+  }
+};
+
+module.exports = { signup, login,getUserIdByUsername };

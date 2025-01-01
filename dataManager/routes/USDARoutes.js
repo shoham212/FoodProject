@@ -1,6 +1,6 @@
 const express = require('express');
 const { getMealSugarLevel } = require('../controllers/USDAController');
-const { authenticateToken } = require('../middlewares/authMiddleware');
+const { authenticateToken } = require('../services/authMiddleware');
 
 const router = express.Router();
 

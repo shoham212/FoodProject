@@ -1,0 +1,116 @@
+.wrapper.style5 {
+  background: #f9f9f9;
+  padding: 4em 3em;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1200px; /* להתפרס יותר אך לא בצורה מוגזמת */
+  margin: 0 auto; /* לשמור על מיקום בעמוד */
+}
+
+.col-6 {
+  flex: 1;
+  margin: 0 20px; /* מרווח בין העמודות */
+}
+
+#contact-form {
+  max-width: 600px; /* לשלוט על רוחב הטופס */
+}
+
+ul.contact {
+  max-width: 600px; /* לשלוט על רוחב רשימת הפרטים */
+}
+
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.field {
+  flex: 1 1 calc(50% - 10px); /* חצי שורה לכל שדה */
+}
+
+.field.full {
+  flex: 1 1 100%; /* לשדה ההודעה - כל השורה */
+}
+
+textarea {
+  width: 100% !important; /* מאפשר לשדה לתפוס את כל רוחב הקונטיינר */
+  height: 150px !important; /* התאמת הגובה */
+  resize: none !important; /* מונע מהמשתמש לשנות את הגודל */
+  padding: 10px !important; /* מוסיף מרווח פנימי */
+  font-size: 1em !important; /* התאמת גודל הטקסט */
+  border: 1px solid #ccc !important; /* גבול מסביב לשדה */
+  border-radius: 5px !important; /* פינות מעוגלות */
+  box-sizing: border-box !important; /* מבטיח שהרוחב כולל את הגבול והפדינג */
+  resize: both !important; /* מאפשר שינוי גודל אופקי ואנכי */
+}
+
+ul.contact {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* שתי עמודות */
+  gap: 15px;
+}
+
+ul.contact li {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+}
+
+ul.contact li .icon {
+  margin-right: 10px;
+  font-size: 1.5em;
+  color: #fa7268;
+}
+
+ul.contact li a {
+  text-decoration: none;
+  color: #333;
+}
+
+ul.contact li a:hover {
+  color: #fa7268;
+}
+
+button {
+  background-color: #fa7268;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #e65e58;
+}
+
+header {
+  text-align: center; /* ממרכז את התוכן */
+  padding: 20px 0; /* מוסיף רווח למעלה ולמטה */
+  overflow: visible; /* מבטיח שהתוכן לא ייחתך */
+  margin-top: 0;
+  padding-top: 0;
+}
+
+
+h1 {
+  font-size: 4em; /* גודל הגופן של הלוגו */
+  margin: 0; /* מסיר רווחים */
+  line-height: 1.2; /* מרווח שורות */
+  margin-top: 0;
+  padding-top: 0;
+}
+
+body {
+  margin-top: -30px !important; /* או ערך מתאים */
+}
+
+;
